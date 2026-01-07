@@ -13,17 +13,12 @@ const PORT = 9001;
  */
 app.use(
     cors({
-        origin: "*", // allow all origins
+        origin: "*",
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
-        exposedHeaders: ["Content-Length"],
-        credentials: false, // MUST be false when origin is "*"
-        maxAge: 86400, // cache preflight for 1 day
     })
 );
 
-// Handle preflight explicitly (important)
-app.options("*", cors());
 
 app.use(express.json());
 

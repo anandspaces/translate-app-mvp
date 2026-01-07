@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import { InferenceClient } from "@huggingface/inference";
 import dotenv from "dotenv";
 
@@ -7,6 +8,9 @@ dotenv.config();
 
 const app = express();
 const PORT = 9001;
+
+// Enable CORS for everyone
+app.use(cors());
 
 // Initialize Client using the Token from .env
 const client = new InferenceClient(process.env.HF_TOKEN);
@@ -24,15 +28,16 @@ async function getTranslation(text, fromLang, toLang) {
         model: "meta-llama/Llama-3.3-70B-Instruct",
         provider: "auto",
         messages: [
-            { 
-              role: "system", 
-              content: `Translate from ${fromLang} to ${toLang}. Return ONLY the translated text.` 
+            {
+                role: "system",
+                content: `Translate from ${fromLang} to ${toLang}. Return ONLY the translated text.`
             },
             { role: "user", content: text }
         ],
         max_tokens: 500,
         temperature: 0.1,
     });
+
     return output.choices[0].message.content.trim();
 }
 
@@ -47,7 +52,12 @@ app.post("/translate", async (req, res) => {
 
         res.status(200).json({
             status: 1,
-            data: { originalText: text, translatedText, sourceLanguage: fromLang, targetLanguage: toLang }
+            data: {
+                originalText: text,
+                translatedText,
+                sourceLanguage: fromLang,
+                targetLanguage: toLang
+            }
         });
     } catch (error) {
         res.status(500).json({ status: 0, message: error.message });

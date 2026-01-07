@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 9001;
 
 // Initialize Client using the Token from .env
 const client = new InferenceClient(process.env.HF_TOKEN);
